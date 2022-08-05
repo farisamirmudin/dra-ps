@@ -1,17 +1,20 @@
 $ProgressPreference = 'Continue'
 $Prefix = 'https://asianembed.io'
 
-$Url = $Prefix + '/search.html?keyword=alchemy'
+$Keyword = Read-Host -Prompt 'Search Drama'
+$Url = $Prefix + ('/search.html?keyword={0}' -f $Keyword)
 $req = Invoke-WebRequest -Uri $Url
 $Links = $req.Links.href
 $Shows = [System.Collections.ArrayList]::new()
+$i = 0
 $Links.ForEach{
     if ($_ -match '/videos/') {
         [void]$Shows.Add($_)
-        Write-Host -Object ($_ -split '\/videos\/(.+)')[1].Replace('-',' ')
+        Write-Host -Object (('({0}) ' -f ($i+1)) + ($_ -split '\/videos\/(.+)')[1].Replace('-',' '))
+        $i++
     }
 } 
-[Int32]$PickShow = Read-Host -Prompt 'Pick Show '
+[Int32]$PickShow = Read-Host -Prompt 'Pick Show'
 $EpPrefix = ($Shows[$PickShow-1] -split '(.+-)')[1]
 $Url = $Prefix + $Shows[$PickShow-1]
 $req = Invoke-WebRequest -Uri $Url
@@ -36,26 +39,43 @@ if ($Eps[0].EpNum -lt $Eps[-1].EpNum){
 [string]$PickEp = (Read-Host -Prompt ('Pick Episode ({0}-{1})' -f $Lower, $Upper)).Replace('.', '-')
 
 $Url = $Prefix + $Eps.Where({$_.EpNum -eq $PickEp}).EpUrl
-$Url
 $req = Invoke-WebRequest -Uri $Url
 $EmbedUrl = 'https:' + ($req.Content -split 'iframe src="(.+)(" allow.+)<\/iframe')[1]
-$EmbedUrl
-$Parsed = [System.Uri]$EmbedUrl
-$Id = ($Parsed.Query -split 'id=(.+)&x')[1]
+$Id = ($EmbedUrl -split 'id=(.+?)&')[1]
 
-$key='3933343232313932343333393532343839373532333432393038353835373532'
-$iv='39323632383539323332343335383235'
-
-
+$Cipher = Get-Content -Path $PSScriptRoot\cipher.json | ConvertFrom-Json
+[byte[]]$Key = $Cipher.key.split(',')
+[byte[]]$Iv = $Cipher.iv.split(',')
 $AjaxPrefix = $Prefix + '/encrypt-ajax.php?'
-$AjaxUrl = $AjaxPrefix + 'id=' + ($Id | openssl enc -e -aes-256-cbc -K $key -iv $iv -a)
-$AjaxUrl
-$req = Invoke-WebRequest -Uri $AjaxUrl -UserAgent 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
-$req.Content
+
+$AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+$AESCipher.Key = $Key
+$AESCipher.IV = $Iv
+
+$UnencryptedBytes     = [System.Text.Encoding]::UTF8.GetBytes($Id)
+$Encryptor            = $AESCipher.CreateEncryptor()
+$EncryptedBytes       = $Encryptor.TransformFinalBlock($UnencryptedBytes, 0, $UnencryptedBytes.Length)
+
+$CrytpedId          = [System.Convert]::ToBase64String($EncryptedBytes)
+$AESCipher.Dispose()
+
+$AjaxUrl = $AjaxPrefix + 'id=' + $CrytpedId
+$req = Invoke-WebRequest -Uri $AjaxUrl
 $Data = $req.Content | ConvertFrom-Json
 
-$Source = $Data.data | openssl enc -a -d -aes-256-cbc -K $key -iv $iv | ConvertFrom-Json
-$StreamUrl = $Source.source[0].file
-$StreamUrl
+$AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+$AESCipher.Key = $Key
 
-mpv $StreamUrl --title=vid --force-window=immediate > nul
+$EncryptedBytes = [System.Convert]::FromBase64String($Data.data)
+$AESCipher.IV = $Iv
+$Decryptor = $AESCipher.CreateDecryptor();
+$UnencryptedBytes = $Decryptor.TransformFinalBlock($EncryptedBytes, 0, $EncryptedBytes.Length)
+
+$Source = [System.Text.Encoding]::UTF8.GetString($UnencryptedBytes) | ConvertFrom-Json
+$AESCipher.Dispose()
+
+$StreamUrl = $Source.source[0].file
+
+mpv\mpv.exe $StreamUrl --title=vid --force-window=immediate
+
+
