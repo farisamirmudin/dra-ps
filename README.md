@@ -14,7 +14,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a 
 
 ## Recommended Installation
 
-Installing dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. Again open powershell and enter the following commands line by line and press enter.
+Installing dependecies using package manager([scoop](https://scoop.sh/) for windows,[Homebrew](https://brew.sh/) for MacOS) is strongly recommended. This eases the process of the installation and saves so much time. Again open powershell and enter the following commands line by line and press enter.
 
 - Windows
   - Powershell 7 can be installed from Microsoft Store or using the following command. Source [docs.microsoft.com](https://docs.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2)
@@ -30,7 +30,7 @@ Installing dependecies using [scoop package manager](https://scoop.sh/) is stron
   scoop install mpv # To install mpv media player, recommended for windows user
   ```
 - MacOS  
-  - Similar to scoop package manager, [homebrew](https://brew.sh/) package manager can be used to install the dependencies. Enter the following commands in the Terminal.
+  - Enter the following commands in the Terminal.
   ```sh
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # To install homebrew
   brew install --cask powershell # To install powershell 7
