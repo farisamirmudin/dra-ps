@@ -109,7 +109,7 @@ function Open-Ep {
 
 $run1 = $true
 while ($run1 -eq $true) {
-    clear
+    Clear-Host
     $run2 = $true
     $Shows = Search-Drama
     $Title = $Shows.Title | fzf
@@ -119,6 +119,7 @@ while ($run1 -eq $true) {
     while ($run2 -eq $true){
         $Ep = Select-Ep $EpList
         Open-Ep $Ep
+        Clear-Host
         $Resp = Show-Text $Ep.Title
         if ($Resp -eq 'q'){$run1 = $run2 = $false} 
         if ($Resp -eq 'w'){$run2 = $false}
