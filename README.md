@@ -6,8 +6,10 @@ To be able to run this script for the first time, enter following command in the
 Set-ExecutionPolicy RemoteSigned
 ```
 ## Dependencies
+
 -fzf
 -mpv
+
 ### Recommended Installation
 Installing the required dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. website. Paste the following commands in the terminal line by line and press enter.
 
