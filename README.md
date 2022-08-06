@@ -7,7 +7,7 @@ Set-ExecutionPolicy RemoteSigned
 ```
 ## Dependencies
 
--fzf
+-fzf \n
 -mpv
 
 ### Recommended Installation
