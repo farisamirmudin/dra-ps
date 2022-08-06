@@ -7,8 +7,8 @@ Set-ExecutionPolicy RemoteSigned
 ```
 ## Dependencies
 
--fzf \n
--mpv
+-fzf  
+-mpv  
 
 ### Recommended Installation
 Installing the required dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. website. Paste the following commands in the terminal line by line and press enter.
