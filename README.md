@@ -15,7 +15,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a 
 
 Installing dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. Again open powershell and enter the following commands line by line and press enter.
 
-- Powershell 7 can be installed from Microsoft Store or using the following command. Source [docs.microsofr.com](https://docs.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2)
+- Powershell 7 can be installed from Microsoft Store or using the following command. Source [docs.microsoft.com](https://docs.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2)
 ```sh
 winget search Microsoft.PowerShell # To check available version
 winget install --id Microsoft.Powershell --source winget # Installation
