@@ -7,23 +7,24 @@ Set-ExecutionPolicy RemoteSigned
 ```
 ## Dependencies
 
--fzf  
--mpv  
+- fzf  
+- mpv  
 
 ### Recommended Installation
+
 Installing the required dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. website. Paste the following commands in the terminal line by line and press enter.
 
--Scoop
+- Scoop
 ```sh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
 irm get.scoop.sh | iex
 ```
--fzf
+- fzf
 ```sh
 scoop bucket add main
 scoop install fzf
 ```
--mpv
+- mpv
 ```sh
 scoop bucket add extras
 scoop install mpv
