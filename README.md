@@ -1,7 +1,7 @@
 # About
 A powershell script that allows watching kdrama using the terminal
 ## First Run
-Open powershell and enter following command. This command is to allow the execution of remote script. Noted, powershell 7, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation).
+Open powershell and enter following command. This command is to allow the execution of remote script. Noted, powershell 7, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). IMPORTANT Below is executed only after the required dependencies are installed.
 ```sh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
 ```
