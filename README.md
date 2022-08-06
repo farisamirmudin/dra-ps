@@ -4,6 +4,7 @@ A powershell script that allows watching kdrama using the terminal
 Open powershell and enter following command. This command is to allow the execution of remote script. Noted, powershell 7, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). IMPORTANT Below is executed only after the required dependencies are installed.
 ```sh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
+./query.ps1 # To execute the program
 ```
 ## Dependencies
 
@@ -30,7 +31,7 @@ Installing dependecies using package manager ([scoop](https://scoop.sh/) for win
   scoop install mpv # To install mpv media player, recommended for windows user
   ```
 - MacOS  
-  - Enter the following commands in the Terminal.
+  - Enter the following commands in the Terminal (without the #...).
   ```sh
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # To install homebrew
   brew install --cask powershell # To install powershell 7
