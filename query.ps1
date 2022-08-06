@@ -13,7 +13,7 @@ function Search-Drama {
                 Title = ($_ -split '/videos/(.*)')[1].Replace('-', ' ')
                 Uri = $_
             }
-            [void]$Shows.Add($Show)   
+            [void]$Shows.Add($Show)
         }
     }
     return $Shows
@@ -38,7 +38,7 @@ function Get-Ep {
 
 function Select-Ep {
     param($EpList)
-    $Title = $EpList.Title | fzf
+    $Title = $EpList.Title | Sort-Object {[int]($_ -split '([\d]+-?[\d]*$)')[1]} | Get-Unique | fzf
     return $EpList.Where({$_.Title -eq $Title})
 }
 
