@@ -1,1 +1,0 @@
-powershell -ExecutionPolicy Unrestricted -File ./query.ps1
