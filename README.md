@@ -11,7 +11,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a 
 - fzf  
 - mpv  
 
-### Recommended Installation
+## Recommended Installation
 
 Installing dependecies using [scoop package manager](https://scoop.sh/) is strongly recommended. This eases the process of the installation and saves so much time. Again open powershell and enter the following commands line by line and press enter.
 
