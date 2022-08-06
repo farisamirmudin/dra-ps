@@ -9,7 +9,8 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a 
 
 - Powershell 7  
 - fzf  
-- mpv  
+- mpv (Windows)
+- iina (MacOS)  
 
 ## Recommended Installation
 
@@ -21,23 +22,15 @@ Installing dependecies using [scoop package manager](https://scoop.sh/) is stron
   winget search Microsoft.PowerShell # To check available version
   winget install --id Microsoft.Powershell --source winget # Installation
   ```
-  - Scoop # Install scoop
+  - Scoop
   ```sh
   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
   irm get.scoop.sh | iex
+  scoop install fzf # To install fzf
+  scoop install mpv # To install mpv media player, recommended for windows user
   ```
-  - fzf
-  ```sh
-  scoop bucket add main
-  scoop install fzf
-  ```
-  - mpv
-  ```sh
-  scoop bucket add extras
-  scoop install mpv
-  ```
-- MacOS
-  Again, similar to scoop package manager, [homebrew](https://brew.sh/) package manager can be used to install the dependencies. Enter the following commands in the Terminal.
+- MacOS  
+  - Similar to scoop package manager, [homebrew](https://brew.sh/) package manager can be used to install the dependencies. Enter the following commands in the Terminal.
   ```sh
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" # To install homebrew
   brew install --cask powershell # To install powershell 7
