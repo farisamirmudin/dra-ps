@@ -95,7 +95,8 @@ function Show-Text {
     # Write-Host '(n) next' -ForegroundColor DarkCyan
     # Write-Host '(r) replay' -ForegroundColor DarkGreen
     # Write-Host '(p) previous' -ForegroundColor DarkCyan
-    Write-Host '(s) select' -ForegroundColor Blue
+    Write-Host '(s) select episode' -ForegroundColor Blue
+    Write-Host '(w) watch another drama' -ForegroundColor Green
     Write-Host '(q) quit' -ForegroundColor Red
     return Read-Host -Prompt 'Choice'
 }
