@@ -1,81 +1,122 @@
 $ProgressPreference = 'Continue'
 $Prefix = 'https://asianembed.io'
-
-$Keyword = Read-Host -Prompt 'Search Drama'
-$Url = $Prefix + ('/search.html?keyword={0}' -f $Keyword)
-$req = Invoke-WebRequest -Uri $Url
-$Links = $req.Links.href
-$Shows = [System.Collections.ArrayList]::new()
-$i = 0
-$Links.ForEach{
-    if ($_ -match '/videos/') {
-        [void]$Shows.Add($_)
-        Write-Host -Object (('({0}) ' -f ($i+1)) + ($_ -split '\/videos\/(.+)')[1].Replace('-',' '))
-        $i++
-    }
-} 
-[Int32]$PickShow = Read-Host -Prompt 'Pick Show'
-$EpPrefix = ($Shows[$PickShow-1] -split '(.+-)')[1]
-$Url = $Prefix + $Shows[$PickShow-1]
-$req = Invoke-WebRequest -Uri $Url
-$Links = $req.Links.href
-$Eps = [System.Collections.ArrayList]::new()
-$Links.ForEach{
-    if ($_ -match $EpPrefix) {
-        $Current = [PSCustomObject]@{
-            EpNum = ($_ -split '([\d]+-?[\d]*)$')[1]
-            EpUrl = $_
-        }
-        [void]$Eps.Add($Current)
-    }
-}
-if ($Eps[0].EpNum -lt $Eps[-1].EpNum){
-    $Upper = $Eps[-1].EpNum
-    $Lower = $Eps[0].EpNum
-} else {
-    $Upper = $Eps[0].EpNum
-    $Lower = $Eps[-1].EpNum
-}
-[string]$PickEp = (Read-Host -Prompt ('Pick Episode ({0}-{1})' -f $Lower, $Upper)).Replace('.', '-')
-
-$Url = $Prefix + $Eps.Where({$_.EpNum -eq $PickEp}).EpUrl
-$req = Invoke-WebRequest -Uri $Url
-$EmbedUrl = 'https:' + ($req.Content -split 'iframe src="(.+)(" allow.+)<\/iframe')[1]
-$Id = ($EmbedUrl -split 'id=(.+?)&')[1]
-
 $Cipher = Get-Content -Path $PSScriptRoot\cipher.json | ConvertFrom-Json
-[byte[]]$Key = $Cipher.key.split(',')
-[byte[]]$Iv = $Cipher.iv.split(',')
-$AjaxPrefix = $Prefix + '/encrypt-ajax.php?'
 
-$AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-$AESCipher.Key = $Key
-$AESCipher.IV = $Iv
+function Search-Drama {
+    $Keyword = $(Write-Host 'Search Drama: ' -ForegroundColor DarkMagenta -NoNewLine; Read-Host)
+    $Url = $Prefix + ('/search.html?keyword={0}' -f $Keyword)
+    $req = Invoke-WebRequest -Uri $Url
+    $Shows = [System.Collections.ArrayList]::new()
+    $req.Links.href.ForEach{
+        if ($_ -match '/videos/') {
+            $Show = [PSCustomObject]@{
+                Title = ($_ -split '/videos/(.*)')[1].Replace('-', ' ')
+                Uri = $_
+            }
+            [void]$Shows.Add($Show)   
+        }
+    }
+    return $Shows
+}
 
-$UnencryptedBytes     = [System.Text.Encoding]::UTF8.GetBytes($Id)
-$Encryptor            = $AESCipher.CreateEncryptor()
-$EncryptedBytes       = $Encryptor.TransformFinalBlock($UnencryptedBytes, 0, $UnencryptedBytes.Length)
+function Get-Ep {
+    param($PickedShow, $EpPrefix)
+    $Url = $Prefix + $PickedShow
+    $req = Invoke-WebRequest -Uri $Url
+    $Eps = [System.Collections.ArrayList]::new()
+    $req.Links.href.ForEach{
+        if ($_ -match $EpPrefix) {
+            $Ep = [PSCustomObject]@{
+                Title = ($_ -split '/videos/(.*)')[1].Replace('-', ' ')
+                Uri = $_
+            }
+            [void]$Eps.Add($Ep)
+        }
+    }
+    return $Eps
+}
 
-$CrytpedId          = [System.Convert]::ToBase64String($EncryptedBytes)
-$AESCipher.Dispose()
+function Select-Ep {
+    param($EpList)
+    $Title = $EpList.Title | fzf
+    return $EpList.Where({$_.Title -eq $Title})
+}
 
-$AjaxUrl = $AjaxPrefix + 'id=' + $CrytpedId
-$req = Invoke-WebRequest -Uri $AjaxUrl
-$Data = $req.Content | ConvertFrom-Json
+function Get-Id {
+    param([Parameter(ValueFromPipeline = $true)]$Ep)
+    $Url = $Prefix + $Ep
+    $req = Invoke-WebRequest -Uri $Url
+    $EmbedUrl = 'https:' + ($req.Content -split 'iframe src="(.+)(" allow.+)<\/iframe')[1]
+    $Id = ($EmbedUrl -split 'id=(.+?)&')[1]
+    return $Id
+}
 
-$AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
-$AESCipher.Key = $Key
+function Use-Encryption {
+    param([Parameter(ValueFromPipeline = $true)]$Data)
+    $AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+    $AESCipher.Key = [byte[]]$Cipher.key.split(',')
+    $AESCipher.IV = [byte[]]$Cipher.iv.split(',')
 
-$EncryptedBytes = [System.Convert]::FromBase64String($Data.data)
-$AESCipher.IV = $Iv
-$Decryptor = $AESCipher.CreateDecryptor();
-$UnencryptedBytes = $Decryptor.TransformFinalBlock($EncryptedBytes, 0, $EncryptedBytes.Length)
+    $UnencryptedBytes     = [System.Text.Encoding]::UTF8.GetBytes($Data)
+    $Encryptor            = $AESCipher.CreateEncryptor()
+    $EncryptedBytes       = $Encryptor.TransformFinalBlock($UnencryptedBytes, 0, $UnencryptedBytes.Length)
 
-$Source = [System.Text.Encoding]::UTF8.GetString($UnencryptedBytes) | ConvertFrom-Json
-$AESCipher.Dispose()
+    $EncryptedData         = [System.Convert]::ToBase64String($EncryptedBytes)
+    $AESCipher.Dispose()
+    return $EncryptedData
+}
 
-$StreamUrl = $Source.source[0].file
+function Use-Decryption {
+    param([Parameter(ValueFromPipeline = $true)]$Data)
+    $AESCipher = New-Object System.Security.Cryptography.AesCryptoServiceProvider
+    $AESCipher.Key = [byte[]]$Cipher.key.split(',')
+    $AESCipher.IV = [byte[]]$Cipher.iv.split(',')
 
-mpv\mpv.exe $StreamUrl --title=vid --force-window=immediate
+    $EncryptedBytes = [System.Convert]::FromBase64String($Data)
+    $Decryptor = $AESCipher.CreateDecryptor();
+    $UnencryptedBytes = $Decryptor.TransformFinalBlock($EncryptedBytes, 0, $EncryptedBytes.Length)
+
+    $DecryptedData = [System.Text.Encoding]::UTF8.GetString($UnencryptedBytes) | ConvertFrom-Json
+    $AESCipher.Dispose()
+    return $DecryptedData
+}
+
+function Get-Stream {
+    param([Parameter(ValueFromPipeline = $true)]$EncryptedId)
+    $AjaxUrl = $Prefix + '/encrypt-ajax.php?id=' + $EncryptedId
+    $req = Invoke-WebRequest -Uri $AjaxUrl
+    $Data = $req.Content | ConvertFrom-Json
+    $Source = $Data.data | Use-Decryption
+    return $Source.source[0].file
+}
+function Show-Text {
+    param($Title)
+    Write-Host ('Currently playing {0}' -f $Title) -ForegroundColor DarkMagenta
+    # Write-Host '(n) next' -ForegroundColor DarkCyan
+    # Write-Host '(r) replay' -ForegroundColor DarkGreen
+    # Write-Host '(p) previous' -ForegroundColor DarkCyan
+    Write-Host '(s) select' -ForegroundColor Blue
+    Write-Host '(q) quit' -ForegroundColor Red
+    return Read-Host -Prompt 'Choice'
+}
+function Open-Ep {
+    param($Ep)
+    $Title = $Ep.Title
+    $StreamUrl = $Ep.Uri | Get-Id | Use-Encryption | Get-Stream
+    mpv $StreamUrl --title=$Title --force-window=immediate &
+}
+
+$run = $true
+$Shows = Search-Drama
+$Title = $Shows.Title | fzf
+$Show = $Shows.Where({$_.Title -eq $Title}).Uri
+$EpPrefix = ($Show -split '(.+-)')[1]
+$EpList = Get-Ep $Show $EpPrefix
+while ($run -eq $true){
+    $Ep = Select-Ep $EpList
+    Open-Ep $Ep
+    $Resp = Show-Text $Ep.Title
+    if ($Resp -eq 'q'){$run = $false}
+}
 
 
