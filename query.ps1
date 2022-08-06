@@ -106,17 +106,22 @@ function Open-Ep {
     mpv $StreamUrl --title=$Title --force-window=immediate &
 }
 
-$run = $true
-$Shows = Search-Drama
-$Title = $Shows.Title | fzf
-$Show = $Shows.Where({$_.Title -eq $Title}).Uri
-$EpPrefix = ($Show -split '(.+-)')[1]
-$EpList = Get-Ep $Show $EpPrefix
-while ($run -eq $true){
-    $Ep = Select-Ep $EpList
-    Open-Ep $Ep
-    $Resp = Show-Text $Ep.Title
-    if ($Resp -eq 'q'){$run = $false}
+$run1 = $true
+while ($run1 -eq $true) {
+    clear
+    $run2 = $true
+    $Shows = Search-Drama
+    $Title = $Shows.Title | fzf
+    $Show = $Shows.Where({$_.Title -eq $Title}).Uri
+    $EpPrefix = ($Show -split '(.+-)')[1]
+    $EpList = Get-Ep $Show $EpPrefix
+    while ($run2 -eq $true){
+        $Ep = Select-Ep $EpList
+        Open-Ep $Ep
+        $Resp = Show-Text $Ep.Title
+        if ($Resp -eq 'q'){$run1 = $run2 = $false} 
+        if ($Resp -eq 'w'){$run2 = $false}
+}
 }
 
 
