@@ -2,20 +2,31 @@ $ProgressPreference = 'Continue'
 $Prefix = 'https://asianembed.io'
 $Cipher = Get-Content -Path $PSScriptRoot\cipher.json | ConvertFrom-Json
 
+function Get-Links {
+    param($Links, $Pattern)
+    $Datas = [System.Collections.ArrayList]::new()
+    $Links.ForEach{
+        if ($_ -match $Pattern) {
+            $Groups = $_ -split '\/videos\/(.+episode-[\d]+)(-[\d])*$'
+            $Title = $Groups[1].Replace('-',' ')
+            if ($Groups[2]) {
+                $Title = $Title + $Groups[2].Replace('-','.')
+            }
+            $Data = [PSCustomObject]@{
+                Title = $Title
+                Uri = $_
+            }
+            [void]$Datas.Add($Data)
+        }
+    }
+    return $Datas
+}
 function Search-Drama {
     $Keyword = $(Write-Host 'Search Drama: ' -ForegroundColor DarkMagenta -NoNewLine; Read-Host)
     $Url = $Prefix + ('/search.html?keyword={0}' -f $Keyword)
     $req = Invoke-WebRequest -Uri $Url
-    $Shows = [System.Collections.ArrayList]::new()
-    $req.Links.href.ForEach{
-        if ($_ -match '/videos/') {
-            $Show = [PSCustomObject]@{
-                Title = ($_ -split '/videos/(.*)')[1].Replace('-', ' ')
-                Uri = $_
-            }
-            [void]$Shows.Add($Show)
-        }
-    }
+    $Pattern = '/videos/'
+    $Shows = Get-Links $req.Links.href $Pattern
     return $Shows
 }
 
@@ -23,22 +34,13 @@ function Get-Ep {
     param($PickedShow, $EpPrefix)
     $Url = $Prefix + $PickedShow
     $req = Invoke-WebRequest -Uri $Url
-    $Eps = [System.Collections.ArrayList]::new()
-    $req.Links.href.ForEach{
-        if ($_ -match $EpPrefix) {
-            $Ep = [PSCustomObject]@{
-                Title = ($_ -split '/videos/(.*)')[1].Replace('-', ' ')
-                Uri = $_
-            }
-            [void]$Eps.Add($Ep)
-        }
-    }
+    $Eps = Get-Links $req.Links.href $EpPrefix
     return $Eps
 }
 
 function Select-Ep {
     param($EpList)
-    $Title = $EpList.Title | Sort-Object {[int]($_ -split '([\d]+-?[\d]*$)')[1]} | Get-Unique | fzf
+    $Title = $EpList.Title | Sort-Object {[float]($_ -split '([\d]+[-.]?[\d]*$)')[1]} | Get-Unique | fzf
     return $EpList.Where({$_.Title -eq $Title})
 }
 
