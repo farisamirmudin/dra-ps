@@ -31,7 +31,7 @@ Installing dependecies using package manager ([scoop](https://scoop.sh/) for win
   scoop install mpv
   ```
 - MacOS  
-  - Enter the following commands in the Terminal.
+  - Homebrew, powershell, fzf and iina.
   ```sh
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   brew install --cask powershell
