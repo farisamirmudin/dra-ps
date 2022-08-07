@@ -1,1 +1,1 @@
-pwsh -executionpolicy remotesigned -File  .\cli.ps1
+pwsh -ExecutionPolicy RemoteSigned -File .\cli.ps1
