@@ -1,7 +1,7 @@
 # About
 A powershell script that allows watching kdrama using the terminal
 ## Install
-IMPORTANT! Powershell 7, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation).
+IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation).
 - Windows
   ```sh
   git clone https://github.com/farisamirmudin/dra-ps.git
@@ -25,6 +25,7 @@ IMPORTANT! Powershell 7, fzf and mpv/iina are required for the program to run. I
 ## Dependencies
 
 - Powershell 7  
+- git
 - fzf  
 - mpv (Windows)
 - iina (MacOS)  
@@ -43,6 +44,7 @@ Installing dependecies using package manager ([Scoop](https://scoop.sh/) for win
   ```sh
   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
   irm get.scoop.sh | iex
+  scoop install git
   scoop install fzf
   scoop install mpv
   ```
@@ -51,6 +53,7 @@ Installing dependecies using package manager ([Scoop](https://scoop.sh/) for win
   ```sh
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   brew install --cask powershell
+  brew install git
   brew install fzf
   brew install --cask iina
   ```
