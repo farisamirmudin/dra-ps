@@ -50,6 +50,7 @@ RECOMMENDED! Use a package manager ([Scoop](https://scoop.sh/) for windows, [Hom
   sudo apt install fzf
   sudo apt install mpv
   ```
+Restart your computer to avoid errors.
 
 
 
