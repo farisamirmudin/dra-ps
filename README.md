@@ -1,5 +1,5 @@
 # About
-A powershell script that allows watching kdrama using the terminal
+A powershell script that allows watching korean drama using the terminal
 ## Install
 IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). After the dependencies are installed, open powershell/cmd/terminal and enter the following commands.
 ```sh
