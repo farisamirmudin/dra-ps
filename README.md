@@ -12,13 +12,13 @@ IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to r
   git clone https://github.com/farisamirmudin/dra-ps.git && cd ./dra-ps
   cp cli.ps1 "$(brew --prefix)"/bin 
   ```
-  Then enter cli.ps1 in the Terminal to run the program.
+  Then enter `pwsh cli.ps1` in the Terminal to run the program.
 - Linux
   ```sh
   git clone https://github.com/farisamirmudin/dra-ps.git && cd ./dra-ps
   cp cli.ps1 /usr/local/bin
   ```
-  Then enter cli.ps1 in the Terminal to run the program.
+  Then enter `pwsh cli.ps1` in the Terminal to run the program.
   
 ## Dependencies
 
