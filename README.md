@@ -6,7 +6,7 @@ IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to r
 cd ./Downloads/
 git clone https://github.com/farisamirmudin/dra-ps.git
 ```
-Then go to the dra-ps folder, double click on the run_cli.bat file in windows folder or run_cli file in linux_darwin folder.
+Then go to the dra-ps folder, double click on the run_cli.bat file in windows folder or run_cli file in linux_darwin folder to run the program.
   
 ## Dependencies
 
