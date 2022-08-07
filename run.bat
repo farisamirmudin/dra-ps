@@ -1,1 +1,1 @@
-Powershell.exe -executionpolicy remotesigned -File  .\cli.ps1
+Powershell -executionpolicy remotesigned -File  .\cli.ps1
