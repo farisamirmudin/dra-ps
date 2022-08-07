@@ -31,32 +31,17 @@ function Search-Drama {
 }
 
 function Get-Eps {
-    param($PickedShow, $EpPrefix)
-    $Url = $Prefix + $PickedShow
+    param($ShowUri, $EpPrefix)
+    $Url = $Prefix + $ShowUri
     $req = Invoke-WebRequest -Uri $Url
     $Eps = Get-Links $req.Links.href $EpPrefix
     return $Eps
 }
 
-# function Get-Current {
-#     param($List, $Title)
-#     $List.ForEach{
-#         if ($_.Title -eq $Title) {
-#             return $_
-#         }
-#     }
-# }
-
 function Select-Ep {
     param($EpList)
     $Title = $EpList.Title | Sort-Object {[float]($_ -split '([\d]+[-.]?[\d]*$)')[1]} | Get-Unique | fzf
-    # $EpList.ForEach{
-    #     if ($_.Title -eq $Title) {
-    #         return $_
-    #     }
-    # }
-    # return Get-Current $EpList $Title
-    return $EpList.Where({$_.Title -eq $Title})
+    return $EpList | Where-Object {$_.Title -eq $Title}
 }
 
 function Get-Id {
@@ -121,26 +106,25 @@ function Open-Ep {
     param($Ep)
     $Title = $Ep.Title
     $StreamUrl = $Ep.Uri | Get-Id | Use-Encryption | Get-Stream
-    mpv $StreamUrl --title=$Title --force-window=immediate
+    mpv $StreamUrl --title=$Title --force-window=immediate &
 }
 
 $run1 = $true
-while ($run1 -eq $true) {
-    Clear-Host
-    $run2 = $true
-    $Shows = Search-Drama
+while ($run1) {
+    do {
+        Clear-Host
+        $run2 = $true
+        $Shows = Search-Drama
+        if (!$Shows) {
+            Write-Host 'No Drama Found. Restarting...'
+            Start-Sleep -Seconds 1.5
+        }
+    } while (!$Shows)
     $Title = $Shows.Title | fzf
-    # $Shows.ForEach{
-    #     if($_.Title -eq $Title) {
-    #         $Show = $_
-    #     }
-    # }
-    
-    $Show = $Shows.Where({$_.Title -eq $Title}).Uri
-    # $Show = Get-Current $Shows $Title
-    $EpPrefix = ($Show -split '(.+-)')[1]
-    $EpList = Get-Eps $Show $EpPrefix
-    while ($run2 -eq $true){
+    $Show = $Shows | Where-Object {$_.Title -eq $Title}
+    $EpPrefix = ($Show.Uri -split '(.+-)')[1]
+    $EpList = Get-Eps $Show.Uri $EpPrefix
+    while ($run2){
         $Ep = Select-Ep $EpList
         Open-Ep $Ep
         Clear-Host
@@ -149,5 +133,3 @@ while ($run1 -eq $true) {
         if ($Resp -eq 'w'){$run2 = $false}
 }
 }
-
-
