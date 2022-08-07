@@ -1,12 +1,12 @@
 # About
 A powershell script that allows watching kdrama using the terminal
 ## Install
-IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). Open powershell/cmd/terminal and enter the following commands.
+IMPORTANT! Powershell 7, git, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). After the dependencies are installed, open powershell/cmd/terminal and enter the following commands.
 ```sh
 cd ./Downloads/
 git clone https://github.com/farisamirmudin/dra-ps.git
 ```
-Then go into the dra-ps folder and double click on the run.bat file (for windows) or on run (for MacOS/Linux).
+Then go into the dra-ps folder and double click on the run.bat file (for windows) or run file (for MacOS/Linux).
   
 ## Dependencies
 
