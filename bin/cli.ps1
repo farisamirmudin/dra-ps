@@ -112,7 +112,7 @@ function Open-Ep {
         mpv $StreamUrl --title=$Title --force-window=immediate &
     }
 }
-$Host.UI.RawUI.WindowTitle = "Powershell Script to watch Kdrama"
+$Host.UI.RawUI.WindowTitle = "Powershell script to watch korean drama"
 $run1 = $true
 while ($run1) {
     do {
