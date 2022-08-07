@@ -1,11 +1,11 @@
 # About
 A powershell script that allows watching kdrama using the terminal
 ## First Run
-Open powershell and enter following commands. This command is to allow the execution of remote script. IMPORTANT! Powershell 7, fzf and mpv/iina are required for the program to run and execute the commands below after the required dependencies are installed. Installations [(See below)](#Recommended-Installation). 
+IMPORTANT! Powershell 7, fzf and mpv/iina are required for the program to run. Installations [(See below)](#Recommended-Installation). Run the program by double clicking the `run.bat` file (for windows) or by executing the following commands (for MacOS or Linux).
 ```sh
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-./query.ps1
-```
+  sudo rm /usr/local/dra-ps
+  sudo cp 
+  ```
 ## Dependencies
 
 - Powershell 7  
@@ -20,8 +20,8 @@ Installing dependecies using package manager ([Scoop](https://scoop.sh/) for win
 - Windows
   - Powershell 7 can be installed from Microsoft Store or using the following commands. Source [docs.microsoft.com](https://docs.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2)
   ```sh
-  winget search Microsoft.PowerShell # To check available version
-  winget install --id Microsoft.Powershell --source winget # Installation
+  winget search Microsoft.PowerShell
+  winget install --id Microsoft.Powershell --source winget
   ```
   - Scoop
   ```sh
