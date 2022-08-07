@@ -44,14 +44,13 @@ function Select-Ep {
     return $EpList | Where-Object {$_.Title -eq $Title}
 }
 
-function Get-Id {
+function Get-Embed {
     param([Parameter(ValueFromPipeline = $true)]$Ep)
     $Url = $Prefix + $Ep
     $req = Invoke-WebRequest -Uri $Url
-    $EmbedUrl = 'https:' + ($req.Content -split 'iframe src="(.+)(" allow.+)<\/iframe')[1]
-    $Id = ($EmbedUrl -split 'id=(.+?)&')[1]
-    return $Id
+    return 'https:' + ($req.Content -split 'iframe src="(.+)(" allow.+)<\/iframe')[1]
 }
+
 
 function Use-Encryption {
     param([Parameter(ValueFromPipeline = $true)]$Data)
@@ -105,7 +104,8 @@ function Show-Text {
 function Open-Ep {
     param($Ep)
     $Title = $Ep.Title
-    $StreamUrl = $Ep.Uri | Get-Id | Use-Encryption | Get-Stream
+    $EmbedUrl = $Ep.Uri | Get-Embed
+    $StreamUrl =  ($EmbedUrl -split 'id=(.+?)&')[1] | Use-Encryption | Get-Stream
     mpv $StreamUrl --title=$Title --force-window=immediate &
 }
 
@@ -114,6 +114,7 @@ while ($run1) {
     do {
         Clear-Host
         $run2 = $true
+        Write-Host 'A powershell script to watch kdrama'
         $Shows = Search-Drama
         if (!$Shows) {
             Write-Host 'No Drama Found. Restarting...'
