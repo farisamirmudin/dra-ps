@@ -37,8 +37,9 @@ RECOMMENDED! Use a package manager ([Scoop](https://scoop.sh/) for windows, [Hom
   ```sh
   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
   irm get.scoop.sh | iex
-  scoop install pwsh
   scoop install git
+  scoop bucket add extras
+  scoop install pwsh
   scoop install fzf
   scoop install mpv
   ```
