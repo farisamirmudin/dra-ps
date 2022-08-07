@@ -7,4 +7,5 @@ if ($updated) {
     
 } else {
     Write-Host 'No New Changes.'
+    Remove-Item -Path '.\cli.ps1.tmp'
 }

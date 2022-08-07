@@ -108,13 +108,12 @@ function Open-Ep {
     $StreamUrl =  ($EmbedUrl -split 'id=(.+?)&')[1] | Use-Encryption | Get-Stream
     mpv $StreamUrl --title=$Title --force-window=immediate &
 }
-
+$Host.UI.RawUI.WindowTitle = "Powershell Script to watch Kdrama"
 $run1 = $true
 while ($run1) {
     do {
         Clear-Host
         $run2 = $true
-        Write-Host 'A powershell script to watch kdrama'
         $Shows = Search-Drama
         if (!$Shows) {
             Write-Host 'No Drama Found. Restarting...'
