@@ -40,6 +40,16 @@ RECOMMENDED! Use a package manager ([Scoop](https://scoop.sh/) for windows, [Hom
   brew install fzf
   brew install --cask iina
   ```
+- Linux 
+  - Installation of Powershell 7 [(Source)(https://docs.microsoft.com/de-de/powershell/scripting/install/install-ubuntu?view=powershell-7.2)], powershell7, git, fzf and mpv.
+  ```sh
+  curl -0 https://github.com/PowerShell/PowerShell/releases/download/v7.2.4/powershell-lts_7.2.4-1.deb_amd64.deb
+  sudo dpkg -i powershell-lts_7.2.4-1.deb_amd64.deb
+  sudo apt-get install -f
+  sudo apt install git-all
+  sudo apt install fzf
+  sudo apt install mpv
+  ```
 
 
 
