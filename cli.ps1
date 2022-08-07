@@ -30,7 +30,7 @@ function Search-Drama {
     return $Shows
 }
 
-function Get-Ep {
+function Get-Eps {
     param($PickedShow, $EpPrefix)
     $Url = $Prefix + $PickedShow
     $req = Invoke-WebRequest -Uri $Url
@@ -38,9 +38,24 @@ function Get-Ep {
     return $Eps
 }
 
+# function Get-Current {
+#     param($List, $Title)
+#     $List.ForEach{
+#         if ($_.Title -eq $Title) {
+#             return $_
+#         }
+#     }
+# }
+
 function Select-Ep {
     param($EpList)
     $Title = $EpList.Title | Sort-Object {[float]($_ -split '([\d]+[-.]?[\d]*$)')[1]} | Get-Unique | fzf
+    # $EpList.ForEach{
+    #     if ($_.Title -eq $Title) {
+    #         return $_
+    #     }
+    # }
+    # return Get-Current $EpList $Title
     return $EpList.Where({$_.Title -eq $Title})
 }
 
@@ -106,7 +121,7 @@ function Open-Ep {
     param($Ep)
     $Title = $Ep.Title
     $StreamUrl = $Ep.Uri | Get-Id | Use-Encryption | Get-Stream
-    mpv $StreamUrl --title=$Title --force-window=immediate &
+    mpv $StreamUrl --title=$Title --force-window=immediate
 }
 
 $run1 = $true
@@ -115,9 +130,16 @@ while ($run1 -eq $true) {
     $run2 = $true
     $Shows = Search-Drama
     $Title = $Shows.Title | fzf
+    # $Shows.ForEach{
+    #     if($_.Title -eq $Title) {
+    #         $Show = $_
+    #     }
+    # }
+    
     $Show = $Shows.Where({$_.Title -eq $Title}).Uri
+    # $Show = Get-Current $Shows $Title
     $EpPrefix = ($Show -split '(.+-)')[1]
-    $EpList = Get-Ep $Show $EpPrefix
+    $EpList = Get-Eps $Show $EpPrefix
     while ($run2 -eq $true){
         $Ep = Select-Ep $EpList
         Open-Ep $Ep
