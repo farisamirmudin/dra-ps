@@ -1,0 +1,6 @@
+#!/bin/sh
+relpath=${BASH_SOURCE:-$0}
+dirpath=$(dirname "$relpath")
+clipath="${dirpath}/cli.ps1"
+
+pwsh -ExecutionPolicy RemoteSigned -File $clipath
