@@ -106,13 +106,13 @@ function Open-Ep {
     $Title = $Ep.Title
     $EmbedUrl = $Ep.Uri | Get-Embed
     $StreamUrl =  ($EmbedUrl -split 'id=(.+?)&')[1] | Use-Encryption | Get-Stream
-    if ($IsMacOS) {
-        iina $StreamUrl --mpv-title=$Title --mpv-force-window=immediate &
-    } else {
-        mpv $StreamUrl --title=$Title --force-window=immediate &
-    }
+    #if ($IsMacOS) {
+    #    iina $StreamUrl --mpv-title=$Title --mpv-force-window=immediate &
+    #} else {
+    mpv $StreamUrl --title=$Title --force-window=immediate &
+    #}
 }
-$Host.UI.RawUI.WindowTitle = "Powershell script to watch korean drama"
+$Host.UI.RawUI.WindowTitle = "Watch korean drama"
 $run1 = $true
 while ($run1) {
     do {
